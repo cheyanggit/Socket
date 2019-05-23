@@ -35,3 +35,29 @@ Time：2015-12-09 ~ 2012-12-21
  6. chat.c：客户端实现用户的聊天互动操作；
  7. Makefile：客户端make文件，控制台执行make命令可直接生成可执行文件client；
  8. interface.c：客户端界面文件；
+ 
+ ##modify by cheyang at 2019.05.23 begin ##
+--|client
+file:config.h
+   1.//修改为当前环境的db地址
+   #define DB_NAME "/root/cheyang/src/st_code/Socket-master/ChatRome/chatRome.db"
+
+--|server 
+file:config.h
+  //修改为当前环境的db地址
+   #define DB_NAME "/root/cheyang/src/st_code/Socket-master/ChatRome/chatRome.db"
+file:register.c<br>
+修改1：
+函数：loginUser修改内存拷贝
+  memcpy(&user , buf , sizeof(buf)); =》  memcpy(&user , buf , sizeof(user));//modify by cheyang
+函数：registerUser  
+  memcpy(&user , buf , sizeof(buf)); =》   memcpy(&user , buf , sizeof(user));//修改sizefof为user
+修改2：
+函数：registerUser
+  代码：sprintf(sql , "insert into User(userName
+  去掉sql串中的registerTime字段插入，因为插入会coredump
+file：server.c
+函数：handleRequest
+  memcpy(&message , buf , sizeof(buf)); =》修改为： memcpy(&message , buf , sizeof(message));
+  send(sockfd , buf , sizeof(buf) , 0);=》修改为： send(sockfd , buf , sizeof(message) , 0);//modify by cheyang
+##modify by cheyang at 2019.05.23 begin ##
